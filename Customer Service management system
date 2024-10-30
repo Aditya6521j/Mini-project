@@ -1,0 +1,163 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// Class to manage customer information
+class Customer {
+public:
+    int customerID;
+    string customerName;
+    string customerEmail;
+
+    Customer(int id, string name, string email) : customerID(id), customerName(name), customerEmail(email) {}
+
+    void displayCustomer() {
+        cout << "Customer ID: " << customerID << ", Name: " << customerName << ", Email: " << customerEmail << endl;
+    }
+};
+
+// Class to manage service tickets
+class Ticket {
+public:
+    int ticketID;
+    int customerID;
+    string issueDescription;
+    string status;
+
+    Ticket(int tid, int cid, string issue) : ticketID(tid), customerID(cid), issueDescription(issue), status("Open") {}
+
+    void resolveTicket() {
+        status = "Resolved";
+    }
+
+    void displayTicket() {
+        cout << "Ticket ID: " << ticketID << ", Customer ID: " << customerID 
+             << ", Issue: " << issueDescription << ", Status: " << status << endl;
+    }
+};
+
+// Class for managing the overall system
+class CustomerServiceManagementSystem {
+private:
+    vector<Customer> customers;
+    vector<Ticket> tickets;
+    int nextCustomerID = 1;
+    int nextTicketID = 1;
+
+public:
+    // Function to add a customer
+    void addCustomer(string name, string email) {
+        customers.push_back(Customer(nextCustomerID, name, email));
+        cout << "Customer added with ID: " << nextCustomerID << endl;
+        nextCustomerID++;
+    }
+
+    // Function to create a ticket for a customer
+    void createTicket(int customerID, string issue) {
+        tickets.push_back(Ticket(nextTicketID, customerID, issue));
+        cout << "Ticket created with ID: " << nextTicketID << endl;
+        nextTicketID++;
+    }
+
+    // Function to resolve a ticket
+    void resolveTicket(int ticketID) {
+        for (auto &ticket : tickets) {
+            if (ticket.ticketID == ticketID) {
+                ticket.resolveTicket();
+                cout << "Ticket " << ticketID << " has been resolved." << endl;
+                return;
+            }
+        }
+        cout << "Ticket ID not found." << endl;
+    }
+
+    // Function to display all customers
+    void displayCustomers() {
+        cout << "Customer List:" << endl;
+        for (auto &customer : customers) {
+            customer.displayCustomer();
+        }
+    }
+
+    // Function to display all tickets
+    void displayTickets() {
+        cout << "Ticket List:" << endl;
+        for (auto &ticket : tickets) {
+            ticket.displayTicket();
+        }
+    }
+};
+
+// Main program
+int main() {
+    CustomerServiceManagementSystem system;
+    int choice;
+
+    do {
+        cout << "\n--- Customer Service Management System ---\n";
+        cout << "1. Add Customer\n";
+        cout << "2. Create Ticket\n";
+        cout << "3. Resolve Ticket\n";
+        cout << "4. Display All Customers\n";
+        cout << "5. Display All Tickets\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                // Add customer
+                string name, email;
+                cout << "Enter customer name: ";
+                cin.ignore();
+                getline(cin, name);
+                cout << "Enter customer email: ";
+                getline(cin, email);
+                system.addCustomer(name, email);
+                break;
+            }
+            case 2: {
+                // Create ticket
+                int customerID;
+                string issue;
+                cout << "Enter customer ID: ";
+                cin >> customerID;
+                cin.ignore();
+                cout << "Enter issue description: ";
+                getline(cin, issue);
+                system.createTicket(customerID, issue);
+                break;
+            }
+            case 3: {
+                // Resolve ticket
+                int ticketID;
+                cout << "Enter ticket ID to resolve: ";
+                cin >> ticketID;
+                system.resolveTicket(ticketID);
+                break;
+            }
+            case 4: {
+                // Display all customers
+                system.displayCustomers();
+                break;
+            }
+            case 5: {
+                // Display all tickets
+                system.displayTickets();
+                break;
+            }
+            case 6: {
+                // Exit
+                cout << "Exiting the system.\n";
+                break;
+            }
+            default:
+                cout << "Invalid choice! Please enter a number between 1 and 6.\n";
+        }
+
+    } while (choice != 6);
+
+    return 0;
+}
